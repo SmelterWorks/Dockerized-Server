@@ -1,8 +1,8 @@
 # Pinned action SHAs. Update via Dependabot github-actions PRs, then refresh comments.
 # actions/checkout@v7.0.1 -> 3d3c42e5aac5ba805825da76410c181273ba90b1
-# docker/setup-qemu-action@v3 -> c7c53464625b32c7a7e944ae62b3e17d2b600130
-# docker/setup-buildx-action@v3 -> 8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
-# docker/login-action@v3 -> c94ce9fb468520275223c153574b00df6fe4bcc9
+# docker/setup-qemu-action@v4.2.0 -> 96fe6ef7f33517b61c61be40b68a1882f3264fb8
+# docker/setup-buildx-action@v4.2.0 -> bb05f3f5519dd87d3ba754cc423b652a5edd6d2c
+# docker/login-action@v4.6.0 -> dbcb813823bdd20940b903addbd779551569679f
 # docker/metadata-action@v6.2.0 -> dc802804100637a589fabce1cb79ff13a1411302
 # docker/build-push-action@v7.3.0 -> 53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
 
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
       - name: Build smoke image
         env:
@@ -98,16 +98,16 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
         with:
           platforms: linux/amd64,linux/arm64
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
       - name: Log in to GHCR
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
