@@ -14,6 +14,10 @@ Default image pins Vintage Story `1.22.6` (sha256-verified download) on .NET 10.
 
 ## Run
 
+Published image: `ghcr.io/smelterworks/vs-dockerized-server`.
+
+**Compose** (build from this repo):
+
 ```bash
 cp .env.example .env
 mkdir -p mods backups
@@ -22,9 +26,22 @@ docker compose up -d
 docker compose attach vintagestory
 ```
 
-Attach gives you the server console. Detach with `Ctrl-p Ctrl-q`. Stop with `/stop` in the console, or `docker compose stop`.
+**docker run** (pull the published image):
 
-Published image: `ghcr.io/smelterworks/vs-dockerized-server`.
+```bash
+mkdir -p mods backups
+docker run -d --name vintagestory \
+  --security-opt no-new-privileges:true \
+  -p 42420:42420/tcp -p 42420:42420/udp \
+  -v vs-data:/data \
+  -v "$(pwd)/mods:/mods:ro" \
+  -v "$(pwd)/backups:/backups" \
+  --restart unless-stopped \
+  ghcr.io/smelterworks/vs-dockerized-server:latest
+docker attach vintagestory
+```
+
+Attach gives you the server console. Detach with `Ctrl-p Ctrl-q`. Stop with `/stop` in the console, or `docker compose stop` / `docker stop vintagestory`.
 
 ## Mods
 
