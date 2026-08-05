@@ -1,0 +1,83 @@
+name: smelterworks-vintagestory
+
+services:
+  vintagestory:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        OCI_VERSION: ${IMAGE_TAG:-dev}
+        OCI_REVISION: ${OCI_REVISION:-unknown}
+    image: ghcr.io/smelterworks/dockerized-server:${IMAGE_TAG:-dev}
+    init: true
+    read_only: true
+    stdin_open: true
+    tty: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
+      - FOWNER
+    ports:
+      - "${VS_PORT:-42420}:42420/tcp"
+      - "${VS_PORT:-42420}:42420/udp"
+    environment:
+      VS_PORT: "42420"
+      VS_MAX_CLIENTS: ${VS_MAX_CLIENTS:-16}
+      VS_DATA_PATH: /data
+      VS_MODS_PATH: /mods
+      VS_BACKUP_PATH: /backups
+      VS_BACKUP_ENABLED: ${VS_BACKUP_ENABLED:-true}
+      VS_BACKUP_INTERVAL_SEC: ${VS_BACKUP_INTERVAL_SEC:-3600}
+      VS_BACKUP_RETENTION: ${VS_BACKUP_RETENTION:-24}
+      VS_BACKUP_ON_SHUTDOWN: ${VS_BACKUP_ON_SHUTDOWN:-true}
+      VS_EXTRA_ARGS: ${VS_EXTRA_ARGS:-}
+    tmpfs:
+      - /tmp:mode=1777,size=64m
+    volumes:
+      - vs-data:/data
+      - ./mods:/mods:ro
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+    stop_grace_period: 90s
+    restart: unless-stopped
+    cpus: ${VS_CPUS:-2.0}
+    mem_limit: ${VS_MEM_LIMIT:-2g}
+    mem_reservation: ${VS_MEM_RESERVATION:-1g}
+    pids_limit: ${VS_PIDS_LIMIT:-256}
+
+  # One-shot manual backup: docker compose --profile tools run --rm backup
+  backup:
+    profiles: ["tools"]
+    image: ghcr.io/smelterworks/dockerized-server:${IMAGE_TAG:-dev}
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    user: "65532:65532"
+    environment:
+      VS_DATA_PATH: /data
+      VS_BACKUP_PATH: /backups
+      VS_BACKUP_RETENTION: ${VS_BACKUP_RETENTION:-24}
+    tmpfs:
+      - /tmp:mode=1777,size=16m
+    volumes:
+      - vs-data:/data:ro
+      - ./backups:/backups
+    entrypoint: ["/usr/local/bin/backup.sh"]
+    restart: "no"
+
+volumes:
+  vs-data:

@@ -1,0 +1,10 @@
+.env
+data/
+mods/*
+!mods/.gitkeep
+backups/*
+!backups/.gitkeep
+*.tar.gz
+*.tgz
+.DS_Store
+*.log
