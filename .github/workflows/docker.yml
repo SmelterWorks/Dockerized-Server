@@ -18,6 +18,8 @@ on:
       - Dockerfile
       - docker/**
       - scripts/ci-smoke.sh
+      - scripts/install-trivy.sh
+      - scripts/trivy-scan.sh
       - docker-compose.yml
       - .dockerignore
       - .github/workflows/docker.yml
@@ -28,6 +30,8 @@ on:
       - Dockerfile
       - docker/**
       - scripts/ci-smoke.sh
+      - scripts/install-trivy.sh
+      - scripts/trivy-scan.sh
       - docker-compose.yml
       - .dockerignore
       - .github/workflows/docker.yml
@@ -54,6 +58,8 @@ jobs:
     outputs:
       image_size: ${{ steps.badge_meta.outputs.size }}
       vs_version: ${{ steps.badge_meta.outputs.vs_version }}
+      trivy_summary: ${{ steps.trivy.outputs.summary }}
+      trivy_count: ${{ steps.trivy.outputs.count }}
 
     steps:
       - name: Checkout
@@ -85,6 +91,20 @@ jobs:
         run: |
           echo "size=$(docker images --format '{{.Size}}' "${{ env.SMOKE_IMAGE }}")" >> "$GITHUB_OUTPUT"
           echo "vs_version=$(grep '^ARG VS_VERSION=' Dockerfile | head -1 | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Install Trivy
+        run: |
+          chmod 755 scripts/install-trivy.sh
+          ./scripts/install-trivy.sh
+
+      - name: Scan image with Trivy
+        id: trivy
+        env:
+          SMOKE_IMAGE: ${{ env.SMOKE_IMAGE }}
+          TRIVY_CACHE_DIR: ${{ runner.temp }}/trivy-cache
+        run: |
+          chmod 755 scripts/trivy-scan.sh
+          ./scripts/trivy-scan.sh
 
       - name: Run smoke test
         env:
@@ -167,3 +187,5 @@ jobs:
       image_size: ${{ needs.smoke.outputs.image_size }}
       published_at: ${{ github.run_started_at }}
       vs_version: ${{ needs.smoke.outputs.vs_version }}
+      trivy_summary: ${{ needs.smoke.outputs.trivy_summary }}
+      trivy_count: ${{ needs.smoke.outputs.trivy_count }}

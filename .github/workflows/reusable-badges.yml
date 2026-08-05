@@ -14,6 +14,12 @@ on:
       vs_version:
         required: true
         type: string
+      trivy_summary:
+        required: true
+        type: string
+      trivy_count:
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -35,13 +41,21 @@ jobs:
           IMAGE_SIZE: ${{ inputs.image_size }}
           PUBLISHED_AT: ${{ inputs.published_at }}
           VS_VERSION: ${{ inputs.vs_version }}
+          TRIVY_SUMMARY: ${{ inputs.trivy_summary }}
+          TRIVY_COUNT: ${{ inputs.trivy_count }}
         run: |
           set -euo pipefail
           published="$(printf '%s' "${PUBLISHED_AT}" | cut -dT -f1)"
+          if [ "${TRIVY_COUNT}" -eq 0 ]; then
+            trivy_color="2ea043"
+          else
+            trivy_color="d1242f"
+          fi
           mkdir -p .github/badges
           printf '%s\n' "{\"schemaVersion\":1,\"label\":\"image size\",\"message\":\"${IMAGE_SIZE}\",\"color\":\"2370ff\"}" > .github/badges/image-size.json
           printf '%s\n' "{\"schemaVersion\":1,\"label\":\"published\",\"message\":\"${published}\",\"color\":\"2ea043\"}" > .github/badges/published.json
           printf '%s\n' "{\"schemaVersion\":1,\"label\":\"vintage story\",\"message\":\"${VS_VERSION}\",\"color\":\"f97316\"}" > .github/badges/vs-version.json
+          printf '%s\n' "{\"schemaVersion\":1,\"label\":\"trivy\",\"message\":\"${TRIVY_SUMMARY}\",\"color\":\"${trivy_color}\"}" > .github/badges/trivy.json
 
       - name: Commit badge data
         run: |
