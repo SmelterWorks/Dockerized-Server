@@ -8,9 +8,6 @@ on:
       image_size:
         required: true
         type: string
-      published_at:
-        required: true
-        type: string
       vs_version:
         required: true
         type: string
@@ -39,18 +36,23 @@ jobs:
       - name: Write badge endpoints
         env:
           IMAGE_SIZE: ${{ inputs.image_size }}
-          PUBLISHED_AT: ${{ inputs.published_at }}
           VS_VERSION: ${{ inputs.vs_version }}
           TRIVY_SUMMARY: ${{ inputs.trivy_summary }}
           TRIVY_COUNT: ${{ inputs.trivy_count }}
         run: |
           set -euo pipefail
-          published="$(printf '%s' "${PUBLISHED_AT}" | cut -dT -f1)"
+          published="$(date -u +%Y-%m-%d)"
           if [ "${TRIVY_COUNT}" -eq 0 ]; then
             trivy_color="2ea043"
           else
             trivy_color="d1242f"
           fi
+          for value in "${IMAGE_SIZE}" "${published}" "${VS_VERSION}" "${TRIVY_SUMMARY}"; do
+            if [ -z "${value}" ]; then
+              echo "badge message must not be empty" >&2
+              exit 1
+            fi
+          done
           mkdir -p .github/badges
           printf '%s\n' "{\"schemaVersion\":1,\"label\":\"image size\",\"message\":\"${IMAGE_SIZE}\",\"color\":\"2370ff\"}" > .github/badges/image-size.json
           printf '%s\n' "{\"schemaVersion\":1,\"label\":\"published\",\"message\":\"${published}\",\"color\":\"2ea043\"}" > .github/badges/published.json

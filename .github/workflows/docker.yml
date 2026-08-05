@@ -185,7 +185,6 @@ jobs:
     uses: ./.github/workflows/reusable-badges.yml
     with:
       image_size: ${{ needs.smoke.outputs.image_size }}
-      published_at: ${{ github.run_started_at }}
       vs_version: ${{ needs.smoke.outputs.vs_version }}
       trivy_summary: ${{ needs.smoke.outputs.trivy_summary }}
       trivy_count: ${{ needs.smoke.outputs.trivy_count }}
