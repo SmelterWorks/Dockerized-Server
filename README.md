@@ -90,7 +90,7 @@ Bump `VS_VERSION` / `VS_SHA256` (and the arm overlay args) in the Dockerfile whe
 
 ## CI
 
-`.github/workflows/docker.yml` builds an amd64 image, scans it with a pinned Trivy binary (sha256-verified download), runs `scripts/ci-smoke.sh` (start, healthcheck, uid `65532`, backup, stop), then publishes multi-arch images to GHCR on `main` and `v*` tags. Publish waits on smoke. After publish, `.github/workflows/reusable-badges.yml` updates shields.io endpoint JSON under `.github/badges/` (image size, publish date, Vintage Story version). Actions are SHA-pinned. CodeQL scans Actions workflows. Dependabot watches Actions and Docker base images weekly. Patterns follow [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
+`.github/workflows/docker.yml` builds an amd64 image, scans OS packages with a pinned Trivy binary (sha256-verified download), runs `scripts/ci-smoke.sh` (start, healthcheck, uid `65532`, backup, stop), then publishes multi-arch images to GHCR on `main` and `v*` tags. Publish waits on smoke. After publish, `.github/workflows/reusable-badges.yml` updates shields.io endpoint JSON under `.github/badges/` (image size, publish date, Vintage Story version). Actions are SHA-pinned. CodeQL scans Actions workflows. Dependabot watches Actions and Docker base images weekly. Patterns follow [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
 
 ## Upstream docs
 

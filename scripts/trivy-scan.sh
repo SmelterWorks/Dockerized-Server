@@ -7,11 +7,16 @@ REPORT_PATH="${TRIVY_REPORT_PATH:-trivy-report.json}"
 
 mkdir -p "${TRIVY_CACHE_DIR}"
 
+scan_args=(
+  --cache-dir "${TRIVY_CACHE_DIR}"
+  --scanners vuln
+  --pkg-types os
+  --severity HIGH,CRITICAL
+  --ignore-unfixed
+)
+
 trivy image \
-  --cache-dir "${TRIVY_CACHE_DIR}" \
-  --scanners vuln \
-  --severity HIGH,CRITICAL \
-  --ignore-unfixed \
+  "${scan_args[@]}" \
   --exit-code 0 \
   --format json \
   --output "${REPORT_PATH}" \
@@ -32,10 +37,7 @@ if [ -n "${GITHUB_OUTPUT:-}" ]; then
 fi
 
 trivy image \
-  --cache-dir "${TRIVY_CACHE_DIR}" \
-  --scanners vuln \
-  --severity HIGH,CRITICAL \
-  --ignore-unfixed \
+  "${scan_args[@]}" \
   --exit-code 0 \
   --format table \
   "${IMAGE}"
