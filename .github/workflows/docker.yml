@@ -3,8 +3,8 @@
 # docker/setup-qemu-action@v3 -> c7c53464625b32c7a7e944ae62b3e17d2b600130
 # docker/setup-buildx-action@v3 -> 8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
 # docker/login-action@v3 -> c94ce9fb468520275223c153574b00df6fe4bcc9
-# docker/metadata-action@v5 -> c299e40c65443455700f0fdfc63efafe5b349051
-# docker/build-push-action@v6 -> 10e90e3645eae34f1e60eeb005ba3a3d33f178e8
+# docker/metadata-action@v6.2.0 -> dc802804100637a589fabce1cb79ff13a1411302
+# docker/build-push-action@v7.3.0 -> 53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
 
 name: Docker
 
@@ -56,7 +56,7 @@ jobs:
         env:
           OCI_VERSION: ${{ github.ref_name }}
           OCI_REVISION: ${{ github.sha }}
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: Dockerfile
@@ -108,7 +108,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -124,7 +124,7 @@ jobs:
           OCI_VERSION: ${{ github.ref_name }}
           OCI_REVISION: ${{ github.sha }}
           PUSH_IMAGE: ${{ github.event_name != 'pull_request' }}
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           file: Dockerfile
