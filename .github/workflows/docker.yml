@@ -34,8 +34,8 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: smelterworks/dockerized-server
-  SMOKE_IMAGE: smelterworks/dockerized-server:smoke
+  IMAGE_NAME: smelterworks/vs-dockerized-server
+  SMOKE_IMAGE: smelterworks/vs-dockerized-server:smoke
 
 jobs:
   smoke:

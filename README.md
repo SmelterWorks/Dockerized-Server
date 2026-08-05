@@ -24,7 +24,7 @@ docker compose attach vintagestory
 
 Attach gives you the server console. Detach with `Ctrl-p Ctrl-q`. Stop with `/stop` in the console, or `docker compose stop`.
 
-Published image: `ghcr.io/smelterworks/dockerized-server`.
+Published image: `ghcr.io/smelterworks/vs-dockerized-server`.
 
 ## Mods
 
@@ -55,7 +55,7 @@ Compose defaults: read-only rootfs, `cap_drop: ALL` plus the few caps needed for
 ## Build
 
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/smelterworks/dockerized-server:dev --load .
+docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/smelterworks/vs-dockerized-server:dev --load .
 ```
 
 `--load` only works for a single platform. For both arches, push to a registry or use `--push`.

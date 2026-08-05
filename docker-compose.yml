@@ -8,7 +8,7 @@ services:
       args:
         OCI_VERSION: ${IMAGE_TAG:-dev}
         OCI_REVISION: ${OCI_REVISION:-unknown}
-    image: ghcr.io/smelterworks/dockerized-server:${IMAGE_TAG:-dev}
+    image: ghcr.io/smelterworks/vs-dockerized-server:${IMAGE_TAG:-dev}
     init: true
     read_only: true
     stdin_open: true
@@ -59,7 +59,7 @@ services:
   # One-shot manual backup: docker compose --profile tools run --rm backup
   backup:
     profiles: ["tools"]
-    image: ghcr.io/smelterworks/dockerized-server:${IMAGE_TAG:-dev}
+    image: ghcr.io/smelterworks/vs-dockerized-server:${IMAGE_TAG:-dev}
     init: true
     read_only: true
     security_opt:
