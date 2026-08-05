@@ -1,5 +1,13 @@
 # SmelterWorks Dockerized Vintage Story Server
 
+[![Docker](https://github.com/SmelterWorks/Dockerized-Server/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/SmelterWorks/Dockerized-Server/actions/workflows/docker.yml)
+[![CodeQL](https://github.com/SmelterWorks/Dockerized-Server/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/SmelterWorks/Dockerized-Server/actions/workflows/codeql.yml)
+[![Image Size](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/SmelterWorks/Dockerized-Server/main/.github/badges/image-size.json)](https://github.com/SmelterWorks/Dockerized-Server/pkgs/container/vs-dockerized-server)
+[![Published](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/SmelterWorks/Dockerized-Server/main/.github/badges/published.json)](https://github.com/SmelterWorks/Dockerized-Server/pkgs/container/vs-dockerized-server)
+[![Vintage Story](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/SmelterWorks/Dockerized-Server/main/.github/badges/vs-version.json)](https://www.vintagestory.at/)
+[![Platforms](https://img.shields.io/badge/platform-amd64%20%7C%20arm64-blue)](https://github.com/SmelterWorks/Dockerized-Server/pkgs/container/vs-dockerized-server)
+[![GHCR](https://img.shields.io/badge/GHCR-latest-2370ff)](https://github.com/SmelterWorks/Dockerized-Server/pkgs/container/vs-dockerized-server)
+
 Docker image and Compose stack for a [Vintage Story](https://www.vintagestory.at/) dedicated server. Targets `linux/amd64` and `linux/arm64`.
 
 SmelterWorks is not affiliated with Anego Studios. The server binaries come from the official CDN. Arm64 replaces native binaries with the experimental overlay from [anegostudios/VintagestoryServerArm64](https://github.com/anegostudios/VintagestoryServerArm64). Harmony-using coded mods need that overlay line (1.21+).
@@ -81,7 +89,7 @@ Bump `VS_VERSION` / `VS_SHA256` (and the arm overlay args) in the Dockerfile whe
 
 ## CI
 
-`.github/workflows/docker.yml` builds an amd64 image, runs `scripts/ci-smoke.sh` (start, healthcheck, uid `65532`, backup, stop), then publishes multi-arch images to GHCR on `main` and `v*` tags. Publish waits on smoke. Actions are SHA-pinned. CodeQL scans Actions workflows. Dependabot watches Actions and Docker base images weekly. Patterns follow [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
+`.github/workflows/docker.yml` builds an amd64 image, runs `scripts/ci-smoke.sh` (start, healthcheck, uid `65532`, backup, stop), then publishes multi-arch images to GHCR on `main` and `v*` tags. Publish waits on smoke. After publish, `.github/workflows/reusable-badges.yml` updates shields.io endpoint JSON under `.github/badges/` (image size, publish date, Vintage Story version). Actions are SHA-pinned. CodeQL scans Actions workflows. Dependabot watches Actions and Docker base images weekly. Patterns follow [GitHub Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use).
 
 ## Upstream docs
 

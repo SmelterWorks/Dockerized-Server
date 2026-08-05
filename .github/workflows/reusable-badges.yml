@@ -1,0 +1,57 @@
+# actions/checkout@v7.0.1 -> 3d3c42e5aac5ba805825da76410c181273ba90b1
+
+name: Reusable badges
+
+on:
+  workflow_call:
+    inputs:
+      image_size:
+        required: true
+        type: string
+      published_at:
+        required: true
+        type: string
+      vs_version:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Update README badges
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      - name: Write badge endpoints
+        env:
+          IMAGE_SIZE: ${{ inputs.image_size }}
+          PUBLISHED_AT: ${{ inputs.published_at }}
+          VS_VERSION: ${{ inputs.vs_version }}
+        run: |
+          set -euo pipefail
+          published="$(printf '%s' "${PUBLISHED_AT}" | cut -dT -f1)"
+          mkdir -p .github/badges
+          printf '%s\n' "{\"schemaVersion\":1,\"label\":\"image size\",\"message\":\"${IMAGE_SIZE}\",\"color\":\"2370ff\"}" > .github/badges/image-size.json
+          printf '%s\n' "{\"schemaVersion\":1,\"label\":\"published\",\"message\":\"${published}\",\"color\":\"2ea043\"}" > .github/badges/published.json
+          printf '%s\n' "{\"schemaVersion\":1,\"label\":\"vintage story\",\"message\":\"${VS_VERSION}\",\"color\":\"f97316\"}" > .github/badges/vs-version.json
+
+      - name: Commit badge data
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/badges/*.json
+          if git diff --staged --quiet; then
+            echo "badge data unchanged"
+            exit 0
+          fi
+          git commit -m "chore: update README badges [skip ci]"
+          git push

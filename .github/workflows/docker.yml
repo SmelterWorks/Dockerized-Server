@@ -51,6 +51,9 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
+    outputs:
+      image_size: ${{ steps.badge_meta.outputs.size }}
+      vs_version: ${{ steps.badge_meta.outputs.vs_version }}
 
     steps:
       - name: Checkout
@@ -76,6 +79,12 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
+
+      - name: Badge metadata
+        id: badge_meta
+        run: |
+          echo "size=$(docker images --format '{{.Size}}' "${{ env.SMOKE_IMAGE }}")" >> "$GITHUB_OUTPUT"
+          echo "vs_version=$(grep '^ARG VS_VERSION=' Dockerfile | head -1 | cut -d= -f2)" >> "$GITHUB_OUTPUT"
 
       - name: Run smoke test
         env:
@@ -146,3 +155,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
           provenance: ${{ env.PUSH_IMAGE }}
           sbom: ${{ env.PUSH_IMAGE }}
+
+  badges:
+    name: Update badges
+    needs: [smoke, publish]
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/reusable-badges.yml
+    with:
+      image_size: ${{ needs.smoke.outputs.image_size }}
+      published_at: ${{ github.run_started_at }}
+      vs_version: ${{ needs.smoke.outputs.vs_version }}
